@@ -1,0 +1,17 @@
+{
+  "name": "vibebot",
+  "version": "1.0.0",
+  "description": "Vibe gifs, mmmm",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "vk",
+    "api",
+    "vibe",
+    "vibe_gifs"
+  ],
+  "author": "Ivan",
+  "license": "ISC"
+}
