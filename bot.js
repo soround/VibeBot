@@ -29,8 +29,8 @@ const rateLimiter = new RateLimiter({
     }
 })
 
-vk.updates.use(rateLimiter.middleware);
-vk.updates.on('message_new', commander.middleware);
+vk.updates.on('message', rateLimiter.middleware);
+vk.updates.on('message', commander.middleware);
 
 
 commander.addCommand({
@@ -51,10 +51,12 @@ commander.addCommand({
                 let file = await video.makeVideo(bpm, `./data/output/cat_${bpm}.gif`)
                 let document = await vk.upload.messageDocument({
                     peer_id: peerId.value,
+                    title: `cat_jam${bpm}bpm@vibebot.gif`,
+                    tags: 'cat',
                     source: {
                         timeout: 10e3 * 6,
                         value: file,
-                        filename: `cat_jam${bpm}bpm@vibebot.gif`
+                        filename: `cat_jam${bpm}bpm_vibebot.gif`
                     },
                 })
 
