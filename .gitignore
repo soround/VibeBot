@@ -86,3 +86,9 @@ typings/
 
 # DynamoDB Local files
 .dynamodb/
+
+# WebStrom files
+.idea/
+# Local files
+/fileStorage.json
+/data/output/
