@@ -50,14 +50,14 @@ commander.addCommand({
             if (!jsonStorage.has(bpm)) {
                 let file = await video.makeVideo(bpm, `./data/output/cat_${bpm}.gif`)
                 let document = await vk.upload.messageDocument({
-                    peer_id: peerId.value,
-                    title: `cat_jam${bpm}bpm@vibebot.gif`,
-                    tags: 'cat',
                     source: {
                         timeout: 10e3 * 6,
                         value: file,
                         filename: `cat_jam${bpm}bpm_vibebot.gif`
                     },
+                    peer_id: peerId.value,
+                    title: `cat_jam${bpm}bpm@vibebot.gif`,
+                    tags: 'cat',
                 })
 
                 jsonStorage.set(bpm, {
@@ -69,7 +69,7 @@ commander.addCommand({
             result = jsonStorage.get(bpm)
 
             await send({
-                message: `Current bpm: ${bpm} PeerID: ${peerId.value}`,
+                message: `Current bpm: ${bpm}`,
                 attachment: result.attachment
             })
         });
