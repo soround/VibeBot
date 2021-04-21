@@ -5,11 +5,11 @@ class RateLimiter {
     constructor(options) {
         this.config = Object.assign({
             waitTime: 1e3,
-            maxPerSecond: 3,
+            maxPerSecond: 1,
             keyGenerator: (context) => {
-                return context && context.peerId
+                return context && context.senderId
             },
-            onLimitExceeded: () => {}
+            onLimitExceeded: (ctx, next) => {}
         }, options)
     }
 
