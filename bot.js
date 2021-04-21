@@ -25,7 +25,7 @@ const rateLimiter = new RateLimiter({
     maxPerSecond: parseInt(process.env.MAX_PER_SECONDS),
     onLimitExceeded: (ctx) => {
         if (ctx.isChat) return;
-        ctx.send(`Частота вызова ограничена (${process.env.MAX_PER_SECONDS} сообщений/секунды)`)
+        ctx.send(`Частота вызова ограничена`)
     }
 })
 
@@ -69,7 +69,7 @@ commander.addCommand({
             result = jsonStorage.get(bpm)
 
             await send({
-                message: `Current bpm: ${bpm}`,
+                message: `Текущий bmp: ${bpm}`,
                 attachment: result.attachment
             })
         });
@@ -77,6 +77,7 @@ commander.addCommand({
 })
 
 commander.addCommand({
+    name: 'uptime',
     pattern: /uptime$/,
     setup() {
         const {send} = useMessage();
