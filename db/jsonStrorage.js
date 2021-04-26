@@ -1,18 +1,19 @@
 const fs = require('fs')
 
 
-let validateJSON = (value) => {
-    try {
-        JSON.parse(value);
-    } catch (e) {
-        return false;
+class JSONStorageUtil {
+    static validateJSON(value) {
+        try {
+            JSON.parse(value);
+        } catch (e) {
+            return false
+        }
+        return true;
     }
-    return true;
 }
 
 
 class JSONStorage {
-
     constructor(filePath, options) {
         if (!filePath || !filePath.length) {
             throw new Error('Missing file path argument.');
@@ -50,7 +51,7 @@ class JSONStorage {
             } catch (err) {
                 throw err;
             }
-            if (!validateJSON(data)) {
+            if (!JSONStorageUtil.validateJSON(data)) {
                 return;
             }
             this.storage = JSON.parse(data);
@@ -101,7 +102,7 @@ class JSONStorage {
     }
 
     delete(key) {
-        let retVal = this.storage.hasOwnProperty(key) ? delete this.storage[key] : undefined;
+        let retVal = this.has(key) ? delete this.storage[key] : undefined;
         if (this.options && this.options.syncOnWrite) this.sync();
         return retVal;
     }

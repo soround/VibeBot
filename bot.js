@@ -3,6 +3,7 @@ require('dotenv').config()
 const {VK} = require('vk-io');
 const {onEnter, useMessage, Commander} = require('./core');
 const {RateLimiter} = require('./midllewares')
+
 const {video, times} = require('./utils/index')
 const {JSONStorage} = require('./db')
 
@@ -22,7 +23,7 @@ const vk = new VK({
 
 const commander = new Commander();
 const rateLimiter = new RateLimiter({
-    maxPerSecond: parseInt(process.env.MAX_PER_SECONDS),
+    maxPerSecond: parseInt(process.env.MAX_PER_SECONDS) || 1,
     onLimitExceeded: (ctx) => {
         if (ctx.isChat) return;
         ctx.send(`Частота вызова ограничена`)
@@ -51,7 +52,7 @@ commander.addCommand({
                 let file = await video.makeVideo(bpm, `./data/output/cat_${bpm}.gif`)
                 let document = await vk.upload.messageDocument({
                     source: {
-                        timeout: 10e3 * 6,
+                        timeout: 10e3 * 8,
                         value: file,
                         filename: `cat_jam${bpm}bpm_vibebot.gif`
                     },
