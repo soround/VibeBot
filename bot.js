@@ -46,7 +46,6 @@ commander.addCommand({
                 await send(`BPM должен быть в пределах от ${process.env.MIN_BPM} до ${process.env.MAX_BPM}`)
                 return;
             }
-            
             if (!jsonStorage.has(bpm)) {
                 let file = await video.makeVideo(bpm, `./data/output/cat_${bpm}.gif`)
                 let document = await vk.upload.messageDocument({
@@ -67,7 +66,6 @@ commander.addCommand({
             }
 
             let result = jsonStorage.get(bpm)
-
             await send({
                 message: `Текущий bmp: ${bpm}`,
                 attachment: result.attachment
