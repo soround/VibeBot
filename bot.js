@@ -2,10 +2,10 @@ require('dotenv').config()
 
 const {VK} = require('vk-io');
 const {onEnter, useMessage, Commander} = require('./core');
-const {RateLimiter} = require('./midllewares')
+const {RateLimiter} = require('./midllewares');
 
-const {video, times} = require('./utils/index')
-const {JSONStorage} = require('./db')
+const {video, times} = require('./utils/index');
+const {JSONStorage} = require('./db');
 
 
 const jsonStorage = new JSONStorage(
@@ -14,7 +14,7 @@ const jsonStorage = new JSONStorage(
         syncOnWrite: true,
         jsonSpaces: 4
     }
-)
+);
 
 const vk = new VK({
     token: process.env.ACCESS_TOKEN,
@@ -23,12 +23,14 @@ const vk = new VK({
 
 const commander = new Commander();
 const rateLimiter = new RateLimiter({
-    maxPerSecond: parseInt(process.env.MAX_PER_SECONDS) || 1,
+    waitTime: 3e3,
+    messageLimit: parseInt(process.env.MAX_PER_SECONDS) || 1,
     onLimitExceeded: (ctx) => {
         if (ctx.isChat) return;
         ctx.send(`Частота вызова ограничена`)
     }
-})
+});
+
 
 vk.updates.on('message', rateLimiter.middleware);
 vk.updates.on('message', commander.middleware);
@@ -37,7 +39,7 @@ vk.updates.on('message', commander.middleware);
 commander.addCommand({
     name: 'vibe',
     pattern: /^\/vibe (\d+)$/,
-    setup() {
+    setup: function () {
         const {send, text, peerId} = useMessage();
 
         onEnter(async () => {
@@ -83,6 +85,17 @@ commander.addCommand({
         onEnter(async () => {
             await send(`Uptime: ${times.uptime()}`)
         });
+    }
+})
+
+commander.addCommand({
+    name: 'stats',
+    pattern: /stats$/,
+    setup() {
+        const {send} = useMessage();
+        onEnter(async () => {
+            await send(`Количество attachments в бд: ${Object.getOwnPropertyNames(jsonStorage.JSON()).length}`);
+        })
     }
 })
 
