@@ -4,8 +4,8 @@ const MemoryStore = require('./memoryStore')
 class RateLimiter {
     constructor(options) {
         this.config = Object.assign({
+            messageLimit: 1,
             waitTime: 1e3,
-            maxPerSecond: 1,
             keyGenerator: (context) => {
                 return context && context.senderId
             },
@@ -21,7 +21,7 @@ class RateLimiter {
                 return next()
             }
             const hit = store.increment(key)
-            if (hit <= this.config.maxPerSecond) {
+            if (hit <= this.config.messageLimit) {
                 return next()
             } else {
                 return this.config.onLimitExceeded(ctx, next)

@@ -1,4 +1,4 @@
-const fs = require('fs')
+const {accessSync, constants, readFileSync, statSync, writeFile, writeFileSync} = require('fs')
 
 
 class JSONStorageUtil {
@@ -29,7 +29,7 @@ class JSONStorage {
 
         let stats;
         try {
-            stats = fs.statSync(this.filePath)
+            stats = statSync(this.filePath)
         } catch (e) {
             if (e.code === 'ENOENT') {
                 return;
@@ -40,14 +40,14 @@ class JSONStorage {
             }
         }
         try {
-            fs.accessSync(filePath, fs.constants.R_OK | fs.constants.W_OK);
+            accessSync(filePath, constants.R_OK | constants.W_OK);
         } catch (err) {
             throw new Error(`Cannot read & write on path "${filePath}"`);
         }
         if (stats.size > 0) {
             let data;
             try {
-                data = fs.readFileSync(filePath);
+                data = readFileSync(filePath);
             } catch (err) {
                 throw err;
             }
@@ -61,12 +61,12 @@ class JSONStorage {
     sync() {
         if (this.options) {
             if (this.options && this.options.asyncWrite) {
-                fs.writeFile(this.filePath, JSON.stringify(this.storage, null, this.options.jsonSpaces), (err) => {
+                writeFile(this.filePath, JSON.stringify(this.storage, null, this.options.jsonSpaces), (err) => {
                     if (err) throw err;
                 });
             } else {
                 try {
-                    fs.writeFileSync(this.filePath, JSON.stringify(this.storage, null, this.options.jsonSpaces));
+                    writeFileSync(this.filePath, JSON.stringify(this.storage, null, this.options.jsonSpaces));
                 } catch (err) {
                     if (err.code === 'EACCES') {
                         throw new Error(`Cannot access path "${this.filePath}".`);
@@ -77,7 +77,7 @@ class JSONStorage {
             }
         } else {
             try {
-                fs.writeFileSync(this.filePath, JSON.stringify(this.storage, null, this.options.jsonSpaces));
+                writeFileSync(this.filePath, JSON.stringify(this.storage, null, this.options.jsonSpaces));
             } catch (err) {
                 if (err.code === 'EACCES') {
                     throw new Error(`Cannot access path "${this.filePath}".`);
@@ -130,6 +130,10 @@ class JSONStorage {
             }
         }
         return JSON.parse(JSON.stringify(this.storage));
+    }
+
+    get length() {
+        return Object.getOwnPropertyNames(this.storage).length || 0;
     }
 }
 
