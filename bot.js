@@ -27,7 +27,7 @@ const rateLimiter = new RateLimitManager({
     messageLimit: parseInt(process.env.MAX_PER_SECONDS) || 1,
     onLimitExceeded: (ctx) => {
         if (ctx.isChat) return;
-        ctx.send(`Частота вызова ограничена`)
+        ctx.send(`Частота вызова ограничена`);
     }
 });
 
@@ -41,15 +41,17 @@ commander.addCommand({
     pattern: /^\/vibe (\d+)$/,
     setup: function () {
         const {send, text, peerId} = useMessage();
-
         onEnter(async () => {
-            const bpm = text.value.match(this.pattern)[1]
-            if (parseInt(bpm) < parseInt(process.env.MIN_BPM) || parseInt(bpm) > parseInt(process.env.MAX_BPM)) {
-                await send(`BPM должен быть в пределах от ${process.env.MIN_BPM} до ${process.env.MAX_BPM}`)
+            let bpm = text.value.match(this.pattern)[1];
+            let minBpm = parseInt(process.env.MIN_BPM);
+            let maxBpm = parseInt(process.env.MAX_BPM);
+
+            if (parseInt(bpm) < minBpm || parseInt(bpm) > maxBpm) {
+                await send(`BPM должен быть в пределах от ${minBpm} до ${maxBpm}`);
                 return;
             }
             if (!jsonStorage.has(bpm)) {
-                let file = await video.makeVideo(bpm, `./data/output/cat_${bpm}.gif`)
+                let file = await video.makeVideo(bpm, `./data/output/cat_${bpm}.gif`);
                 let document = await vk.upload.messageDocument({
                     source: {
                         timeout: 10e3 * 8,
@@ -59,19 +61,19 @@ commander.addCommand({
                     peer_id: peerId.value,
                     title: `cat_jam${bpm}bpm@vibebot.gif`,
                     tags: 'cat',
-                })
+                });
 
                 jsonStorage.set(bpm, {
                     filePath: file,
                     attachment: String(document)
-                })
+                });
             }
 
             let result = jsonStorage.get(bpm)
             await send({
                 message: `Текущий bmp: ${bpm}`,
                 attachment: result.attachment
-            })
+            });
         });
     }
 })
@@ -81,9 +83,8 @@ commander.addCommand({
     pattern: /uptime$/,
     setup() {
         const {send} = useMessage();
-
         onEnter(async () => {
-            await send(`Uptime: ${times.uptime()}`)
+            await send(`Uptime: ${times.uptime()}`);
         });
     }
 })
@@ -95,7 +96,7 @@ commander.addCommand({
         const {send} = useMessage();
         onEnter(async () => {
             await send(`Количество attachments в бд: ${Object.getOwnPropertyNames(jsonStorage.JSON()).length}`);
-        })
+        });
     }
 })
 
