@@ -2,7 +2,7 @@ require('dotenv').config()
 
 const {VK} = require('vk-io');
 const {onEnter, useMessage, Commander} = require('./core');
-const {RateLimiter} = require('./midllewares');
+const {RateLimitManager} = require('./midllewares');
 
 const {video, times} = require('./utils/index');
 const {JSONStorage} = require('./db');
@@ -22,7 +22,7 @@ const vk = new VK({
 });
 
 const commander = new Commander();
-const rateLimiter = new RateLimiter({
+const rateLimiter = new RateLimitManager({
     waitTime: 3e3,
     messageLimit: parseInt(process.env.MAX_PER_SECONDS) || 1,
     onLimitExceeded: (ctx) => {

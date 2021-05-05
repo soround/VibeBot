@@ -1,7 +1,7 @@
 const MemoryStore = require('./memoryStore')
 
 
-class RateLimiter {
+class RateLimitManager {
     constructor(options) {
         this.config = Object.assign({
             messageLimit: 1,
@@ -31,4 +31,4 @@ class RateLimiter {
 }
 
 
-module.exports = { RateLimiter }
+module.exports = { RateLimitManager }

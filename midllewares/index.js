@@ -1,6 +1,6 @@
-const { RateLimiter } = require('./rateLimiter/rateLimiter')
+const { RateLimitManager } = require('./rateLimitManager/rateLimitManager')
 
 
 module.exports = {
-    RateLimiter
+    RateLimitManager
 }
