@@ -31,12 +31,13 @@ class JSONStorage {
         try {
             stats = statSync(this.filePath)
         } catch (e) {
-            if (e.code === 'ENOENT') {
-                return;
-            } else if (e.code === 'EACCES') {
-                throw new Error(`Cannot access path "${filePath}".`);
-            } else {
-                throw new Error(`Error while checking for existence of path "${filePath}": ${e}`);
+            switch (e.code) {
+                case 'ENOENT':
+                    return;
+                case 'EACCES':
+                    throw new Error(`Cannot access path "${filePath}".`);
+                default:
+                    throw new Error(`Error while checking for existence of path "${filePath}": ${e}`);
             }
         }
         try {
@@ -59,30 +60,30 @@ class JSONStorage {
     }
 
     sync() {
-        if (this.options) {
-            if (this.options && this.options.asyncWrite) {
-                writeFile(this.filePath, JSON.stringify(this.storage, null, this.options.jsonSpaces), (err) => {
-                    if (err) throw err;
-                });
-            } else {
-                try {
-                    writeFileSync(this.filePath, JSON.stringify(this.storage, null, this.options.jsonSpaces));
-                } catch (err) {
-                    if (err.code === 'EACCES') {
+        if (this.options) if (this.options && this.options.asyncWrite) {
+            writeFile(this.filePath, JSON.stringify(this.storage, null, this.options.jsonSpaces), (err) => {
+                if (err) throw err;
+            });
+        } else {
+            try {
+                writeFileSync(this.filePath, JSON.stringify(this.storage, null, this.options.jsonSpaces));
+            } catch (err) {
+                switch (err.code) {
+                    case 'EACCES':
                         throw new Error(`Cannot access path "${this.filePath}".`);
-                    } else {
+                    default:
                         throw new Error(`Error while writing to path "${this.filePath}": ${err}`);
-                    }
                 }
             }
         } else {
             try {
                 writeFileSync(this.filePath, JSON.stringify(this.storage, null, this.options.jsonSpaces));
             } catch (err) {
-                if (err.code === 'EACCES') {
-                    throw new Error(`Cannot access path "${this.filePath}".`);
-                } else {
-                    throw new Error(`Error while writing to path "${this.filePath}": ${err}`);
+                switch (err.code) {
+                    case 'EACCES':
+                        throw new Error(`Cannot access path "${this.filePath}".`);
+                    default:
+                        throw new Error(`Error while writing to path "${this.filePath}": ${err}`);
                 }
             }
         }
@@ -90,7 +91,9 @@ class JSONStorage {
 
     set(key, value) {
         this.storage[key] = value;
-        if (this.options && this.options.syncOnWrite) this.sync();
+        if (this.options) {
+            if (this.options.syncOnWrite) this.sync();
+        }
     }
 
     has(key) {
@@ -100,22 +103,6 @@ class JSONStorage {
     get(key) {
         return this.has(key) ? this.storage[key] : undefined;
     }
-
-    delete(key) {
-        let retVal = this.has(key) ? delete this.storage[key] : undefined;
-        if (this.options && this.options.syncOnWrite) this.sync();
-        return retVal;
-    }
-
-    deleteAll() {
-        for (let key in this.storage) {
-            if (this.storage.hasOwnProperty(key)) {
-                this.delete(key);
-            }
-        }
-        return this;
-    }
-
     toString() {
         return JSON.stringify(this.storage, null, this.options.jsonSpaces)
     }

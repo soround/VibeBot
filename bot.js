@@ -22,7 +22,7 @@ const vk = new VK({
 });
 
 const commander = new Commander();
-const rateLimiter = new RateLimitManager({
+const rateLimitManager = new RateLimitManager({
     waitTime: 3e3,
     messageLimit: parseInt(process.env.MAX_PER_SECONDS) || 1,
     onLimitExceeded: (ctx) => {
@@ -32,7 +32,7 @@ const rateLimiter = new RateLimitManager({
 });
 
 
-vk.updates.on('message', rateLimiter.middleware);
+vk.updates.on('message', rateLimitManager.middleware);
 vk.updates.on('message', commander.middleware);
 
 

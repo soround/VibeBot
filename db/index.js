@@ -1,4 +1,4 @@
-const { JSONStorage } = require('./jsonStrorage')
+const { JSONStorage } = require('./JSONStorage')
 
 
 module.exports = {
