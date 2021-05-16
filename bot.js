@@ -40,7 +40,7 @@ commander.addCommand({
     name: 'vibe',
     pattern: /^\/vibe (\d+)$/,
     setup: function () {
-        const {send, text, peerId} = useMessage();
+        const {send, text, peerId, senderId} = useMessage();
         onEnter(async () => {
             let bpm = text.value.match(this.pattern)[1];
             let minBpm = parseInt(process.env.MIN_BPM);
@@ -64,14 +64,20 @@ commander.addCommand({
                 });
 
                 jsonStorage.set(bpm, {
-                    filePath: file,
-                    attachment: String(document)
+                    generationDate: new Date().toJSON(),
+                    attachment: String(document),
                 });
             }
 
             let result = jsonStorage.get(bpm)
+            let message;
+            if (process.env.WHITE_IDS.indexOf(senderId.value)) {
+                message = `Текущий bpm: ${bpm}\nGeneration date: ${new Date(result.generationDate).toLocaleString()}`;
+            } else {
+                message = `Текущий bmp: ${bpm}`;
+            }
             await send({
-                message: `Текущий bmp: ${bpm}`,
+                message: message,
                 attachment: result.attachment
             });
         });

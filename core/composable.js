@@ -65,10 +65,10 @@ class Commander {
     commands = [];
 
     /**
-     * @param{{name: string, pattern: RegExp, setup(): void}} command - Основной объкт комманды
-     * @param{string} command.name - Имя комманды
+     * @param{{name: string, pattern: RegExp, setup(): void}} command - Основной объект команды
+     * @param{string} command.name - Имя команды
      * @param{RegExp} command.pattern - Триггер команды
-     * @param {function} command.setup - Основная логика комманды
+     * @param {function} command.setup - Основная логика команды
      */
     addCommand(command) {
         this.commands.push(command);
