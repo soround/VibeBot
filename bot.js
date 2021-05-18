@@ -66,19 +66,21 @@ commander.addCommand({
                 jsonStorage.set(bpm, {
                     generationDate: new Date().toJSON(),
                     attachment: String(document),
+                    count: 0
                 });
             }
 
             let result = jsonStorage.get(bpm)
-            let message;
+            result.count = result.count + 1;
+            jsonStorage.set(bpm, result)
+
+            let message = `Текущий bmp: ${bpm}`;
             if (process.env.WHITE_IDS.indexOf(senderId.value)) {
-                message = `Текущий bpm: ${bpm}\nGeneration date: ${new Date(result.generationDate).toLocaleString()}`;
-            } else {
-                message = `Текущий bmp: ${bpm}`;
+                message = `bpm: ${bpm}\nGeneration date: ${new Date(result.generationDate).toLocaleString()}\nUsage count: ${result.count}`;
             }
             await send({
                 message: message,
-                attachment: result.attachment
+                attachment: result.attachment,
             });
         });
     }
