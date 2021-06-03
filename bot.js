@@ -92,7 +92,7 @@ commander.addCommand({
     setup() {
         const {send} = useMessage();
         onEnter(async () => {
-            await send(`Uptime: ${times.uptime()}`);
+            await send(`Uptime: ${times.formatDuration(process.uptime() * 1000)}`);
         });
     }
 })
