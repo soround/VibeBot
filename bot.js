@@ -103,7 +103,7 @@ commander.addCommand({
     setup() {
         const {send} = useMessage();
         onEnter(async () => {
-            await send(`Количество attachments в бд: ${Object.getOwnPropertyNames(jsonStorage.JSON()).length}`);
+            await send(`Количество attachments в бд: ${jsonStorage.length}`);
         });
     }
 })
